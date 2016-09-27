@@ -1,0 +1,44 @@
+.idea
+target
+
+#ECLIPSE
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# Eclipse Core
+.project
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+.cproject
+.classpath
+.buildpath
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+#JAVA
+*.class
+# Package Files #
+*.jar
+*.war
+*.ear
