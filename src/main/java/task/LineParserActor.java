@@ -1,15 +1,14 @@
 package task;
 
 import akka.actor.UntypedActor;
+import task.util.Parser;
 
 public class LineParserActor extends UntypedActor {
 
 	@Override
 	public void onReceive(Object message) throws Throwable {
 		if (message instanceof String) {
-			int id = Integer.parseInt(((String) message).split(";")[0].trim());
-			double amount = Integer.parseInt(((String) message).split(";")[1].trim());
-			getSender().tell(new IdAmount(id, amount), getSelf());
+			getSender().tell(Parser.getIdAmount((String) message), getSelf());
 		} else {
 			unhandled(message);
 		}
