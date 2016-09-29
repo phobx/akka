@@ -1,6 +1,6 @@
 package task.util;
 
-import task.IdAmount;
+import task.entity.IdAmount;
 
 public class Parser {
 

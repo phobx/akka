@@ -1,4 +1,4 @@
-package task;
+package task.entity;
 
 public class IdAmount {
 

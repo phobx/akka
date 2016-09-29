@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import task.IdAmount;
+import task.entity.IdAmount;
 import task.util.GenerateFile;
 import task.util.Parser;
 
@@ -17,7 +17,7 @@ public class TrivialFileReader {
 
 	public static void main(String[] args) {
 
-		try (Stream<String> lines = Files.lines(Paths.get(GenerateFile.FILENAME))) {
+		try (Stream<String> lines = Files.lines(Paths.get(GenerateFile.SOURCE_FILENAME))) {
 			lines.forEach(x -> {
 				IdAmount idAmount = Parser.getIdAmount(x);
 				if (!data.containsKey(idAmount.getId())) {

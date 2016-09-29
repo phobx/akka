@@ -9,11 +9,12 @@ import java.util.Random;
 
 public class GenerateFile {
 
-	public static final String FILENAME = "C:\\file_storage.txt";
+	public static final String SOURCE_FILENAME = "C:\\file_storage.txt";
+	public static final String DESTINATION_FILENAME = "C:\\file_result.txt";
 
 	private static final int NUMBER_OF_LINES = 100_000;
 	private static final int ID_MAX_VALUE = 1000;
-	private static final Path FILEPATH = Paths.get(FILENAME);
+	private static final Path FILEPATH = Paths.get(SOURCE_FILENAME);
 	private static final Random RANDOM = new Random();
 
 	public static int nextId() {

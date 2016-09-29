@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import task.actors.LineParserActor;
+import task.entity.EndOfFile;
 import task.util.GenerateFile;
 
 public class FileReader {
@@ -21,8 +23,9 @@ public class FileReader {
 		final ActorSystem actorSystem = ActorSystem.create("test");
 		final ActorRef lineParserActor = actorSystem.actorOf(Props.create(LineParserActor.class), "lineParserActor");
 
-		try (Stream<String> lines = Files.lines(Paths.get(GenerateFile.FILENAME))) {
+		try (Stream<String> lines = Files.lines(Paths.get(GenerateFile.SOURCE_FILENAME))) {
 			lines.forEach(x -> lineParserActor.tell(x, ActorRef.noSender()));
+			lineParserActor.tell(new EndOfFile(), ActorRef.noSender());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
