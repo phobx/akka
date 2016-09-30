@@ -9,8 +9,9 @@ import java.util.stream.Stream;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
+import task.actors.AggregatorActor;
 import task.actors.LineParserActor;
+import task.actors.WriteToFileActor;
 import task.entity.EndOfFile;
 import task.util.GenerateFile;
 
@@ -21,7 +22,9 @@ public class FileReader {
 	public static void main(String[] args) {
 
 		final ActorSystem actorSystem = ActorSystem.create("test");
-		final ActorRef lineParserActor = actorSystem.actorOf(Props.create(LineParserActor.class), "lineParserActor");
+		final ActorRef writeToFileActor = actorSystem.actorOf(WriteToFileActor.props(), "writeToFileActor");
+		final ActorRef aggregatorActor = actorSystem.actorOf(AggregatorActor.props(writeToFileActor), "aggregatorActor");
+		final ActorRef lineParserActor = actorSystem.actorOf(LineParserActor.props(aggregatorActor), "lineParserActor");
 
 		try (Stream<String> lines = Files.lines(Paths.get(GenerateFile.SOURCE_FILENAME))) {
 			lines.forEach(x -> lineParserActor.tell(x, ActorRef.noSender()));

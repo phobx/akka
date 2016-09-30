@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import akka.actor.ActorRef;
+import akka.actor.Props;
 import akka.actor.UntypedActor;
 import task.entity.EndOfFile;
 import task.entity.IdAmount;
@@ -11,7 +13,8 @@ import task.entity.Result;
 
 public class AggregatorActor extends UntypedActor {
 
-	static final Map<Integer, Double> data = new HashMap<>();
+	private final Map<Integer, Double> data = new HashMap<>();
+	private final ActorRef writeToFileActor;
 
 	@Override
 	public void onReceive(Object message) throws Throwable {
@@ -24,9 +27,19 @@ public class AggregatorActor extends UntypedActor {
 			}
 		} else if (message instanceof EndOfFile) {
 			// send result to file writer actor
-			new Result(Collections.unmodifiableMap(data));
+			writeToFileActor.tell(new Result(Collections.unmodifiableMap(data)), getSelf());
+		} else {
+			unhandled(message);
 		}
 
+	}
+
+	public AggregatorActor(ActorRef writeToFileActor) {
+		this.writeToFileActor = writeToFileActor;
+	}
+
+	public static Props props(ActorRef writeToFileActor) {
+		return Props.create(AggregatorActor.class, writeToFileActor);
 	}
 
 }
