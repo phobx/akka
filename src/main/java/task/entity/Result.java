@@ -1,17 +1,22 @@
 package task.entity;
 
-import java.util.Map;
-
 public class Result {
 
-	private final Map<Integer, Double> result;
+	private final String key;
+	private final double value;
 
-	public Result(Map<Integer, Double> result) {
-		this.result = result;
+	public Result(String key, double value) {
+		super();
+		this.key = key;
+		this.value = value;
 	}
 
-	public Map<Integer, Double> getResult() {
-		return result;
+	public String getKey() {
+		return key;
+	}
+
+	public double getValue() {
+		return value;
 	}
 
 }

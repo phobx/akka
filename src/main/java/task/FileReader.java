@@ -3,8 +3,6 @@ package task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import akka.actor.ActorRef;
@@ -14,8 +12,6 @@ import task.entity.EndOfFile;
 import task.util.GenerateFile;
 
 public class FileReader {
-
-	static final Map<Integer, Double> data = new ConcurrentHashMap<>();
 
 	public static void main(String[] args) {
 

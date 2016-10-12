@@ -10,7 +10,6 @@ import java.util.Map;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import akka.routing.RoundRobinPool;
 import task.entity.EndOfFile;
 import task.entity.Result;
 import task.util.GenerateFile;
@@ -18,38 +17,40 @@ import task.util.GenerateFile;
 public class MasterActor extends UntypedActor {
 
 	// size of aggregator pool
-	public static final int SIZE_OF_POOL = 10;
 	private int stoppedAggregators = 0;
-	private final ActorRef aggregatorRouter = this.getContext().actorOf(
-			ParserAggregatorActor.props().withRouter(new RoundRobinPool(SIZE_OF_POOL)), "aggregator");
 	// final result
-	private final Map<Integer, Double> data = new HashMap<>();
+	private final Map<String, Double> data = new HashMap<>();
+	private final Map<String, ActorRef> aggregatorPool = new HashMap<>();
 
 	@Override
 	public void onReceive(Object message) throws Throwable {
 		if (message instanceof String) {
-			aggregatorRouter.tell(message, getSelf());
+			String[] splitted = ((String) message).split(";");
+			String id = splitted[0].trim();
+			String stringAmount = splitted[1].trim();
+
+			ActorRef aggregatorRouter = aggregatorPool.get(id);
+			if (aggregatorRouter == null) {
+				ActorRef newAggregatorActor = getContext().actorOf(ParserAggregatorActor.props(id));
+				newAggregatorActor.tell(stringAmount, getSelf());
+				aggregatorPool.put(id, newAggregatorActor);
+			} else {
+				aggregatorRouter.tell(stringAmount, getSelf());
+			}
+
 		} else if (message instanceof Result) {
 			// gather all results
-			((Result) message).getResult().forEach((id, amount) -> {
-				if (!data.containsKey(id)) {
-					data.put(id, amount);
-				} else {
-					double newAmount = data.get(id) + amount;
-					data.put(id, newAmount);
-				}
-			});
+			data.put(((Result) message).getKey(), ((Result) message).getValue());
 			stoppedAggregators++;
-			if (stoppedAggregators == SIZE_OF_POOL) {
+			if (stoppedAggregators == getPoolSize()) {
 				// and write to file
 				writeToFile();
 			}
 		} else if (message instanceof EndOfFile) {
 			// terminate all aggregators
-			for (int i = 0; i < SIZE_OF_POOL; i++) {
-				aggregatorRouter.tell(message, getSelf());
-			}
-
+			aggregatorPool.forEach((id, actor) -> {
+				actor.tell(message, getSelf());
+			});
 		} else {
 			unhandled(message);
 		}
@@ -71,8 +72,12 @@ public class MasterActor extends UntypedActor {
 		getContext().system().terminate();
 	}
 
-	private byte[] idAndAmountToBytes(Integer id, Double amount) {
+	private byte[] idAndAmountToBytes(String id, Double amount) {
 		return new StringBuilder().append(id).append(';').append(amount).append("\r\n").toString().getBytes();
+	}
+
+	private int getPoolSize() {
+		return aggregatorPool.size();
 	}
 
 	public static Props props() {
