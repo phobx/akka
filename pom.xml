@@ -4,28 +4,27 @@
 	<groupId>com.phoq</groupId>
 	<artifactId>akka</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
-
+	
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-actor_2.11 -->
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-actor_2.11</artifactId>
-			<version>2.4.10</version>
+			<version>2.4.11</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-testkit_2.11 -->
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-testkit_2.11</artifactId>
-			<version>2.4.10</version>
+			<version>2.4.11</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-stream_2.11 -->
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-stream_2.11</artifactId>
-			<version>2.4.10</version>
+			<version>2.4.11</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/junit/junit -->

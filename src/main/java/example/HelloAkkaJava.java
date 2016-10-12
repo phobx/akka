@@ -13,9 +13,11 @@ import scala.concurrent.duration.Duration;
 
 public class HelloAkkaJava {
 	public static class Greet implements Serializable {
+		private static final long serialVersionUID = 1L;
 	}
 
 	public static class WhoToGreet implements Serializable {
+		private static final long serialVersionUID = 1L;
 		public final String who;
 
 		public WhoToGreet(String who) {
@@ -24,6 +26,7 @@ public class HelloAkkaJava {
 	}
 
 	public static class Greeting implements Serializable {
+		private static final long serialVersionUID = 1L;
 		public final String message;
 
 		public Greeting(String message) {
@@ -78,7 +81,8 @@ public class HelloAkkaJava {
 
 			// after zero seconds, send a Greet message every second to the greeter with a sender of the GreetPrinter
 			final ActorRef greetPrinter = system.actorOf(Props.create(GreetPrinter.class));
-			system.scheduler().schedule(Duration.Zero(), Duration.create(1, TimeUnit.SECONDS), greeter, new Greet(), system.dispatcher(), greetPrinter);
+			system.scheduler().schedule(Duration.Zero(), Duration.create(1, TimeUnit.SECONDS), greeter, new Greet(),
+					system.dispatcher(), greetPrinter);
 		} catch (TimeoutException ex) {
 			System.out.println("Got a timeout waiting for reply from an actor");
 			ex.printStackTrace();
